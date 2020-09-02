@@ -192,13 +192,15 @@ func getValuesTableTemplates() string {
 	valuesSectionBuilder := strings.Builder{}
 	valuesSectionBuilder.WriteString(`{{ define "chart.valuesHeader" }}## Values{{ end }}`)
 
-	valuesSectionBuilder.WriteString(`{{ define "chart.valuesTable" }}`)
-	valuesSectionBuilder.WriteString("| Key | Type | Default | Description |\n")
-	valuesSectionBuilder.WriteString("|-----|------|---------|-------------|\n")
-	valuesSectionBuilder.WriteString("  {{- range .Values }}")
-	valuesSectionBuilder.WriteString("\n| {{ .Key }} | {{ .Type }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} | {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} |")
-	valuesSectionBuilder.WriteString("  {{- end }}")
-	valuesSectionBuilder.WriteString("{{ end }}")
+	valuesSectionBuilder.WriteString(`
+{{ define "chart.valuesTable" }}
+| Key | Description | Default |
+|---|---|---|
+{{- range .Values }}
+| {{ .Key }} | ` + "`{{ .Type }}`" + ` {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+{{- end }}
+{{ end }}
+`)
 
 	valuesSectionBuilder.WriteString(`{{ define "chart.valuesSection" }}`)
 	valuesSectionBuilder.WriteString("{{ if .Values }}")
